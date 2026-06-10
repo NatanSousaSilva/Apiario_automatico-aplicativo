@@ -1,41 +1,34 @@
 import { sequelize } from "../../config/config_db";
 import Sequelize, { Model } from "sequelize";
 
-class Partida extends Model{}
+class Usuario extends Model {}
 
-Partida.init({
+Usuario.init({
     id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
     },
-    time_casa: {
+    email: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
     },
-    time_fora: {
+    senha: {
         type: Sequelize.STRING,
         allowNull: true,
     },
-    qtd_gols_casa: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-    },
-    qtd_gols_fora: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-    },
-    resultado: {
+    provedor_login: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
+        defaultValue: 'local',
     },
-},{
+}, {
     sequelize,
     timestamps: false,
-    tableName: "partida",
-    modelName: "Partida",
-},
-);
+    tableName: "usuarios",
+    modelName: "Usuario",
+});
 
-export {Partida}
+export { Usuario };

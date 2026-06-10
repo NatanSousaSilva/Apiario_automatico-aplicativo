@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Controller_Partida } from "../app/controllers/controller_partida";
+import { Controller_Partida } from "../app/controllers/controller_usuario";
 
 const partida = Router();
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Controller_Time_Partida } from "../app/controllers/controller_time_partida";
+import { Controller_Time_Partida } from "../app/controllers/controller_dados_leitura";
 
 const time_partida = Router();
 

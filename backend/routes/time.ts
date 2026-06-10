@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Controller_Time } from "../app/controllers/controller_time";
+import { Controller_Time } from "../app/controllers/controller_dispositivo";
 
 const time = Router();
 
