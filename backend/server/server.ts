@@ -1,31 +1,30 @@
-"import Express from "express";
+import express from "express";
+import cors from "cors";
 
-import { partida } from "../routes/partida";
-import { time } from "../routes/time";
-import { time_partida } from "../routes/time_partida";
+import { dispositivo } from "../routes/dispositivo";
+import { usuario } from "../routes/usuario";
+import { dados_leitura } from "../routes/dados_leitura";
 
-import cors from "cors";"
+const Server = express();
 
-const Server = Express();
-
-Server.use(Express.json());
+Server.use(express.json());
 
 Server.use(
-    cors({
-        origin: "http://localhost:5173",
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        credentials: true,
-    }),
+  cors({
+    origin: "http://localhost:5173", 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
 );
 
 Server.get("/", (req, res) => {
-    res.json({
-        message: "test",
-    }).status(200);
+  res.status(200).json({
+    message: "test",
+  });
 });
 
-Server.use("/partida", partida);
-Server.use("/time", time);
-Server.use("/time_partida", time_partida);
+Server.use("/usuario", usuario);
+Server.use("/dispositivo", dispositivo);
+Server.use("/dados_leitura", dados_leitura);
 
 export default Server;

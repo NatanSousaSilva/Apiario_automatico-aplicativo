@@ -8,11 +8,10 @@ interface IUsuario {
     provedor_login: string;
 }
 
-
 class Controller_Usuario{
     constructor() {}
 
-    public static async create_partida(
+    public static async create_usuario(
         req: Request<{}, {}, IUsuario>,
         res: Response,
     ) {
