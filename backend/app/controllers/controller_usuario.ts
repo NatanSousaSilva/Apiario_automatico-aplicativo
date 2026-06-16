@@ -5,6 +5,8 @@ interface IUsuario {
     id: number;
     email: string;
     senha: string;
+    google_id: string;
+    nome: string;
     provedor_login: string;
 }
 
@@ -20,6 +22,8 @@ class Controller_Usuario{
                 id: req.body.id,
                 email: req.body.email,
                 senha: req.body.senha,
+                google: req.body.google_id,
+                nome: req.body.nome,
                 provedor_login: req.body.provedor_login,
             });
 

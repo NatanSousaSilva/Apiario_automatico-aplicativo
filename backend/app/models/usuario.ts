@@ -19,6 +19,15 @@ Usuario.init({
         type: Sequelize.STRING,
         allowNull: true,
     },
+    google_id: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        unique: true,
+    },
+    nome: {
+        type: Sequelize.STRING,
+        allowNull: true,
+    },
     provedor_login: {
         type: Sequelize.STRING,
         allowNull: false,

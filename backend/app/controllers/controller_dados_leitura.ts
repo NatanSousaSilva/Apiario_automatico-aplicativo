@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import { Dados_Leitura } from "../models/dados_leitura";
 
 interface IDados_leitrua {
-    chave: number;
-    id_usuario: number;
-    senha: string;
+    vez_lida: number;
+    chave_dispositivo: number;
+    valor: string;
+    sensor: string;
 
 }
 
@@ -17,9 +18,10 @@ class Controller_Dados_Leitura{
     ) {
         try {
             const dados_leitura = await Dados_Leitura.create({
-                chave: req.body.chave,
-                id_usuario: req.body.id_usuario,
-                senha: req.body.senha,
+                chave: req.body.vez_lida,
+                id_usuario: req.body.chave_dispositivo,
+                valor: req.body.valor,
+                sensor: req.body.sensor,
             });
 
             res.status(201).json({
@@ -53,7 +55,7 @@ class Controller_Dados_Leitura{
     public static async update_dados_leitura(req: Request, res: Response) {
         try {
             await Dados_Leitura.update(req.body, {
-                where: { id: req.params.id },
+                where: { id: req.params. },
             });
 
             res.status(200).json({

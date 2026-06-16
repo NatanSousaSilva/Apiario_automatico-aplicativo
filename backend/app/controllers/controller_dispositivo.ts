@@ -37,11 +37,11 @@ class Controller_Dispositivo{
 
     public static async read_dispositivos(req: Request, res: Response) {
         try {
-            const time = await Dispositivo.findAll();
+            const dispositivos = await Dispositivo.findAll();
 
             res.status(200).json({
-                message: "Dispositivo listados.",
-                results: time,
+                message: "Dispositivos listados.",
+                results: dispositivos,
             });
         } catch (err) {
             res.status(500).json({
@@ -54,7 +54,7 @@ class Controller_Dispositivo{
     public static async update_dispositivo(req: Request, res: Response) {
         try {
             await Dispositivo.update(req.body, {
-                where: { id: req.params.id },
+                where: { chave: req.params.chave },
             });
 
             res.status(200).json({
@@ -72,7 +72,7 @@ class Controller_Dispositivo{
     public static async delete_dispositivo(req: Request, res: Response) {
         try {
             await Dispositivo.destroy({
-                where: { id: req.params.id },
+                where: { chave: req.params.chave },
             });
 
             res.status(200).json({
@@ -87,10 +87,10 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async find_dispositivo(req: Request, res: Response) {
+    public static async find_by_chave(req: Request, res: Response) {
         try {
             const dispositivo = await Dispositivo.findOne({
-                where: { id: req.params.id },
+                where: { chave: req.params.chave },
             });
 
             res.status(200).json({
@@ -100,6 +100,24 @@ class Controller_Dispositivo{
         } catch (err) {
             res.status(500).json({
                 error_message: "Erro encontrar dispositivo.",
+                error: err,
+            });
+        }
+    }
+
+    public static async find_by_idusuario(req: Request, res: Response) {
+        try {
+            const dispositivos = await Dispositivo.findAll({
+                where: { id_usuario: req.params.id_usuario },
+            });
+
+            res.status(200).json({
+                message: "Dispositivos encontrado.",
+                results: [dispositivos],
+            });
+        } catch (err) {
+            res.status(500).json({
+                error_message: "Erro encontrar dispositivos.",
                 error: err,
             });
         }

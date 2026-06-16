@@ -24,7 +24,7 @@ Dados_Leitura.init({
         allowNull: false,
     },
     sensor: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
     },
 }, {
