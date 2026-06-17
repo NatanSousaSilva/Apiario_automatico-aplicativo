@@ -7,7 +7,7 @@ dispositivo.get("/read", Controller_Dispositivo.read_dispositivos);
 dispositivo.get("/find_by_usuario/:id_usuario", Controller_Dispositivo.find_by_idusuario);
 dispositivo.get("/find_by_chave/:chave", Controller_Dispositivo.find_by_chave);
 dispositivo.post("/create", Controller_Dispositivo.create_dispositivo);
-dispositivo.put("/update", Controller_Dispositivo.update_dispositivo);
-dispositivo.delete("/delete", Controller_Dispositivo.delete_dispositivo);
+dispositivo.put("/update/:chave", Controller_Dispositivo.update_dispositivo);
+dispositivo.delete("/delete/:chave", Controller_Dispositivo.delete_dispositivo);
 
 export { dispositivo };

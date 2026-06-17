@@ -21,7 +21,6 @@ async function handle_credential(response: google.accounts.id.CredentialResponse
 
     const usuario = await resposta.json();
 
-
-    // tirar depois
-    console.log(usuario);
 }
+
+async function 

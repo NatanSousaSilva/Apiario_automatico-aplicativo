@@ -18,8 +18,8 @@ class Controller_Dados_Leitura{
     ) {
         try {
             const dados_leitura = await Dados_Leitura.create({
-                chave: req.body.vez_lida,
-                id_usuario: req.body.chave_dispositivo,
+                vez_lida: req.body.vez_lida,
+                chave_dispositivo: req.body.chave_dispositivo,
                 valor: req.body.valor,
                 sensor: req.body.sensor,
             });
@@ -38,33 +38,15 @@ class Controller_Dados_Leitura{
 
     public static async read_dados_leitura(req: Request, res: Response) {
         try {
-            const time = await Dados_Leitura.findAll();
+            const dados_leitura = await Dados_Leitura.findAll();
 
             res.status(200).json({
                 message: "Dados_Leitura listados.",
-                results: time,
+                results: dados_leitura,
             });
         } catch (err) {
             res.status(500).json({
                 error_message: "Erro renortar dados_leitura.",
-                error: err,
-            });
-        }
-    }
-
-    public static async update_dados_leitura(req: Request, res: Response) {
-        try {
-            await Dados_Leitura.update(req.body, {
-                where: { id: req.params. },
-            });
-
-            res.status(200).json({
-                message: "Dados_Leitura editado.",
-                results: [],
-            });
-        } catch (err) {
-            res.status(500).json({
-                error_message: "Erro editar dados_leitura.",
                 error: err,
             });
         }
@@ -88,10 +70,10 @@ class Controller_Dados_Leitura{
         }
     }
 
-    public static async find_dados_leitura(req: Request, res: Response) {
+    public static async find_by_dispositivo(req: Request, res: Response) {
         try {
-            const dados_leitura = await Dados_Leitura.findOne({
-                where: { id: req.params.id },
+            const dados_leitura = await Dados_Leitura.findAll({
+                where: { dispositivo: req.params.dispositivo },
             });
 
             res.status(200).json({
