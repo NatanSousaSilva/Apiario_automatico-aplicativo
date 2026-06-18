@@ -12,10 +12,7 @@ interface IDados_leitrua {
 class Controller_Dados_Leitura{
     constructor() {}
 
-    public static async create_dados_leitura(
-        req: Request<{}, {}, IDados_leitrua>,
-        res: Response,
-    ) {
+    public static async create_dados_leitura(req: Request<{}, {}, IDados_leitrua>, res: Response): Promise<void> {
         try {
             const dados_leitura = await Dados_Leitura.create({
                 vez_lida: req.body.vez_lida,
@@ -36,7 +33,7 @@ class Controller_Dados_Leitura{
         }
     }
 
-    public static async read_dados_leitura(req: Request, res: Response) {
+    public static async read_dados_leitura(req: Request, res: Response): Promise<void> {
         try {
             const dados_leitura = await Dados_Leitura.findAll();
 
@@ -52,7 +49,7 @@ class Controller_Dados_Leitura{
         }
     }
 
-    public static async delete_dados_leitura(req: Request, res: Response) {
+    public static async delete_dados_leitura(req: Request, res: Response): Promise<void> {
         try {
             await Dados_Leitura.destroy({
                 where: { id: req.params.id },
@@ -70,7 +67,7 @@ class Controller_Dados_Leitura{
         }
     }
 
-    public static async find_by_dispositivo(req: Request, res: Response) {
+    public static async find_by_dispositivo(req: Request, res: Response): Promise<void> {
         try {
             const dados_leitura = await Dados_Leitura.findAll({
                 where: { dispositivo: req.params.dispositivo },

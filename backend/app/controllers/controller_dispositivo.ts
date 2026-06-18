@@ -12,10 +12,7 @@ interface IDispositivo {
 class Controller_Dispositivo{
     constructor() {}
 
-    public static async create_dispositivo(
-        req: Request<{}, {}, IDispositivo>,
-        res: Response,
-    ) {
+    public static async create_dispositivo(req: Request<{}, {}, IDispositivo>, res: Response,): Promise<void> {
         try {
             const dispositivo = await Dispositivo.create({
                 chave: req.body.chave,
@@ -35,7 +32,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async read_dispositivos(req: Request, res: Response) {
+    public static async read_dispositivos(req: Request, res: Response): Promise<void> {
         try {
             const dispositivos = await Dispositivo.findAll();
 
@@ -51,7 +48,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async update_dispositivo(req: Request, res: Response) {
+    public static async update_dispositivo(req: Request, res: Response): Promise<void> {
         try {
             await Dispositivo.update(req.body, {
                 where: { chave: req.params.chave },
@@ -69,7 +66,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async delete_dispositivo(req: Request, res: Response) {
+    public static async delete_dispositivo(req: Request, res: Response): Promise<void> {
         try {
             await Dispositivo.destroy({
                 where: { chave: req.params.chave },
@@ -87,7 +84,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async find_by_chave(req: Request, res: Response) {
+    public static async find_by_chave(req: Request, res: Response): Promise<void> {
         try {
             const dispositivo = await Dispositivo.findOne({
                 where: { chave: req.params.chave },
@@ -105,7 +102,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async find_by_idusuario(req: Request, res: Response) {
+    public static async find_by_idusuario(req: Request, res: Response): Promise<void> {
         try {
             const dispositivos = await Dispositivo.findAll({
                 where: { id_usuario: req.params.id_usuario },

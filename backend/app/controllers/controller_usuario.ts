@@ -13,10 +13,7 @@ interface IUsuario {
 class Controller_Usuario{
     constructor() {}
 
-    public static async create_usuario(
-        req: Request<{}, {}, IUsuario>,
-        res: Response,
-    ) {
+    public static async create_usuario_http(req: Request<{}, {}, IUsuario>, res: Response): Promise<void> {
         try {
             const partida = await Usuario.create({
                 id: req.body.id,
@@ -39,7 +36,7 @@ class Controller_Usuario{
         }
     }
 
-    public static async read_usuarios(req: Request, res: Response) {
+    public static async read_usuarios(req: Request, res: Response): Promise<void> {
         try {
             const usuarios = await Usuario.findAll();
 
@@ -55,7 +52,7 @@ class Controller_Usuario{
         }
     }
 
-    public static async update_usuario(req: Request, res: Response) {
+    public static async update_usuario(req: Request, res: Response): Promise<void> {
         try {
             await Usuario.update(req.body, {
                 where: { id: req.params.id },
@@ -73,7 +70,7 @@ class Controller_Usuario{
         }
     }
 
-    public static async delete_usuario(req: Request, res: Response) {
+    public static async delete_usuario(req: Request, res: Response): Promise<void> {
         try {
             await Usuario.destroy({
                 where: { id: req.params.id },
@@ -91,10 +88,10 @@ class Controller_Usuario{
         }
     }
 
-    public static async find_usuario(req: Request, res: Response) {
+    public static async find_by_email_http(req: Request, res: Response): Promise<void> {
         try {
             const usuario = await Usuario.findOne({
-                where: { id: req.params.id },
+                where: { email: req.params.email },
             });
 
             res.status(200).json({
@@ -107,6 +104,23 @@ class Controller_Usuario{
                 error: err,
             });
         }
+    }
+
+    public static async create_usuario_var(nome: string, email: string, google_id: string | null, provedor_login: string): Promise<Usuario> {
+        return await Usuario.create({
+            nome,
+            email,
+            google_id,
+            provedor_login,
+        });
+    }
+
+    public static async find_by_email_var(_email: string): Promise<Usuario | null> {
+        return await Usuario.findOne({
+            where: {
+                email: _email,
+            },
+        });
     }
 
 

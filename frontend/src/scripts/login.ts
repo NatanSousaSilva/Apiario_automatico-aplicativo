@@ -23,4 +23,6 @@ async function handle_credential(response: google.accounts.id.CredentialResponse
 
 }
 
-async function 
+async function acessar_dispositivos(){
+    
+}
