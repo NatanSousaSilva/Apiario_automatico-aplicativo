@@ -115,10 +115,10 @@ class Controller_Usuario{
         });
     }
 
-    public static async find_by_email_var(_email: string): Promise<Usuario | null> {
+    public static async find_by_email_var(email: string): Promise<Usuario | null> {
         return await Usuario.findOne({
             where: {
-                email: _email,
+                email,
             },
         });
     }

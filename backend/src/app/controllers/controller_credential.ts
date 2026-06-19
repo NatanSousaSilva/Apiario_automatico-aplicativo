@@ -10,8 +10,7 @@ class Controller_Credential{
         try {
             const { token } = req.body;
 
-            const ticket =
-                await client.verifyIdToken({
+            const ticket = await client.verifyIdToken({
                     idToken: token,
                     audience: process.env.GOOGLE_CLIENT_ID,
                 });
@@ -25,21 +24,29 @@ class Controller_Credential{
                 return;
             }
 
+            if (!payload.email || !payload.name || !payload.sub) {
+                res.status(401).json({
+                    erro: "Dados do usuário não encontrados"
+                });
+                return;
+            }
+
             const email = payload.email;
             const nome = payload.name;
+            const google_id = payload.sub;
+            const provedor_login = "google";
 
             let usuario = await Controller_Usuario.find_by_email_var(email);
 
             if (!usuario) {
-
-                usuario =  await Controller_Usuario.create_usuario_var(nome, email);
+                usuario = await Controller_Usuario.create_usuario_var(nome, email, google_id, provedor_login);
             }
 
-            res.status(200).json({
-                id_usuario: usuario.id_usuario,
-                nome: usuario.nome,
-                email: usuario.email,
+            res.status(201).json({
+                messager: "Usuario",
+                results: usuario,
             });
+            return;
 
         } catch (erro) {
             res.status(500).json({
@@ -48,8 +55,5 @@ class Controller_Credential{
         }
     }
 };
-
-
-
 
 export {Controller_Credential};

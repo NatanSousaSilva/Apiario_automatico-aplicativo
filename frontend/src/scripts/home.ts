@@ -3,20 +3,26 @@ interface IDispositivo {
     chave: string;
 }
 
-async function listar_dispositivos(id_usuario: string): Promise<void> {
+async function listar_dispositivos(): Promise<void> {
     try {
-        const resposta = await fetch('http://localhost:3000/dispositivo/find_by_idusuario/${id_usuario}');
+        const token = localStorage.getItem("token");
+
+        if (!token) throw new Error("Usuário não autenticado");
+
+        const resposta = await fetch("http://localhost:3000/dispositivo/read",{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
 
         if (!resposta.ok) {
             throw new Error(`Erro HTTP: ${resposta.status}`);
         }
 
-        ///////
-
         const dispositivos: IDispositivo[] = await resposta.json();
 
         const lista = document.getElementById("lista_dispositivo");
-
         if (!lista) return;
 
         lista.replaceChildren();
@@ -26,36 +32,25 @@ async function listar_dispositivos(id_usuario: string): Promise<void> {
         for (const dispositivo of dispositivos) {
 
             const card = document.createElement("div");
-            const h3_chave = document.createElement("h3");
-            const btn_excluir = document.createElement("button");
-            const btn_dados = document.createElement("button");
+            const h3 = document.createElement("h3");
+            const btnExcluir = document.createElement("button");
+            const btnDados = document.createElement("button");
 
-            ///////
+            h3.textContent = dispositivo.chave;
+            btnExcluir.textContent = "Excluir";
+            btnDados.textContent = "Ver Dados";
 
-            h3_chave.textContent = dispositivo.chave;
-            btn_excluir.textContent = "Excluir";
-            btn_dados.textContent = "Ver Dados";
+            btnExcluir.addEventListener("click", async () => {
+                await excluir_dispositivo(dispositivo.chave);
+                await listar_dispositivos();
+            });
 
-            btn_excluir.addEventListener(
-                "click",
-                async () => {
-                    await excluir_dispositivo(dispositivo.chave);
-                    await listar_dispositivos(id_usuario);
-                }
-            );
+            btnDados.addEventListener("click", async () => {
+                await acessar_dados_dispositivo(dispositivo.chave);
+            });
 
-            btn_dados.addEventListener(
-                "click",
-                async () => await acessar_dados_dispositivo(dispositivo.chave)
-            );
-
-            ///////
-
-            card.append(h3_chave, btn_excluir, btn_dados,);
-
+            card.append(h3, btnExcluir, btnDados);
             card.classList.add("card-dispositivo");
-            btn_excluir.classList.add("btn_excluir");
-            btn_dados.classList.add("btn_dados");
 
             fragment.appendChild(card);
         }
@@ -68,45 +63,56 @@ async function listar_dispositivos(id_usuario: string): Promise<void> {
 }
 
 
-async function excluir_dispositivo(chave_dispositivo: string): Promise<void> {
-    try{
-        const resposta = await fetch('http://localhost:3000/dispositivo/delete/${chave_dispositivo}', {
-            method: "DELETE",
-        });
+async function excluir_dispositivo(chave: string): Promise<void> {
+    try {
+        const token = localStorage.getItem("token");
+
+        const resposta = await fetch(`http://localhost:3000/dispositivo/${chave}`,{
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
 
         if (!resposta.ok) {
             throw new Error(`Erro HTTP: ${resposta.status}`);
         }
 
-    } catch (erro){
+    } catch (erro) {
         console.error("Erro ao excluir dispositivo:", erro);
     }
 }
 
 
-async function acessar_dados_dispositivo(chave_dispositivo: string): Promise<void> {
-    try{
-        localStorage.setItem("dispositivo_atual", chave_dispositivo);
+async function acessar_dados_dispositivo(chave: string): Promise<void> {
+    try {
+        const token = localStorage.getItem("token");
 
-        const resposta = await fetch('http://localhost:3000/dados_dispositivo')
+        if (!token) throw new Error("Usuário não autenticado");
+
+        localStorage.setItem("dispositivo_atual", chave);
+
+        const resposta = await fetch(`http://localhost:3000/dados_dispositivo/${chave}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
 
         if (!resposta.ok) {
             throw new Error(`Erro HTTP: ${resposta.status}`);
         }
 
-    } catch (erro){
+        const dados = await resposta.json();
+        console.log(dados);
+
+    } catch (erro) {
         console.error("Erro ao acessar dados:", erro);
     }
 }
 
 
-window.addEventListener(
-    "DOMContentLoaded",
-    () => {
-        const id_usuario = localStorage.getItem("id_usuario_atual");
-
-        if (id_usuario) {
-            listar_dispositivos(id_usuario);
-        }
-    }
-);
+window.addEventListener("DOMContentLoaded", () => {
+    listar_dispositivos();
+});
