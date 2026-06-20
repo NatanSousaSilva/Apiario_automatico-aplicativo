@@ -12,6 +12,13 @@ class Controller_Dispositivo{
 
     public static async create_dispositivo(req: Request<{}, {}, IDispositivo>, res: Response,): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             const dispositivo = await Dispositivo.create({
                 chave: req.body.chave,
                 id_usuario: req.body.id_usuario,
@@ -32,6 +39,13 @@ class Controller_Dispositivo{
 
     public static async list(req: Request, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+            
             const dispositivos = await Dispositivo.findAll();
 
             res.status(200).json({
@@ -100,6 +114,13 @@ class Controller_Dispositivo{
 
     public static async discociar_dispositivo(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             await Dispositivo.update({ id_usuario: null }, {
                 where: { chave: Number(req.body.chave) },
             });
@@ -118,6 +139,13 @@ class Controller_Dispositivo{
 
     public static async delete_dispositivo(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             await Dispositivo.destroy({
                 where: { chave: Number(req.body.chave) },
             });
@@ -134,10 +162,17 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async find_by_chave(req: Request, res: Response): Promise<void> {
+    public static async find_by_chave(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             const dispositivo = await Dispositivo.findOne({
-                where: { chave: Number(req.params.chave) },
+                where: { chave: Number(req.body.chave) },
             });
 
             res.status(200).json({

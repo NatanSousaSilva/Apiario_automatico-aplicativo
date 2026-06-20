@@ -12,8 +12,15 @@ interface IDados_leitrua {
 class Controller_Dados_Leitura{
     constructor() {}
 
-    public static async create_dados_leitura(req: Request<{}, {}, IDados_leitrua>, res: Response): Promise<void> {
+    public static async create(req: Request<{}, {}, IDados_leitrua>, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             const dados_leitura = await Dados_Leitura.create({
                 vez_lida: req.body.vez_lida,
                 chave_dispositivo: req.body.chave_dispositivo,
@@ -33,8 +40,15 @@ class Controller_Dados_Leitura{
         }
     }
 
-    public static async read_dados_leitura(req: Request, res: Response): Promise<void> {
+    public static async list(req: Request, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             const dados_leitura = await Dados_Leitura.findAll();
 
             res.status(200).json({
@@ -49,28 +63,17 @@ class Controller_Dados_Leitura{
         }
     }
 
-    public static async delete_dados_leitura(req: Request, res: Response): Promise<void> {
+    public static async list_by_chavedispositivo(req: Request<{}, {}, IDados_leitrua>, res: Response): Promise<void> {
         try {
-            await Dados_Leitura.destroy({
-                where: { id: req.params.id },
-            });
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
 
-            res.status(200).json({
-                message: "Dados_Leitura deletado.",
-                results: [],
-            });
-        } catch (err) {
-            res.status(200).json({
-                error_message: "Error deletar dados_leitura",
-                errors: err,
-            });
-        }
-    }
-
-    public static async find_by_dispositivo(req: Request, res: Response): Promise<void> {
-        try {
             const dados_leitura = await Dados_Leitura.findAll({
-                where: { dispositivo: req.params.dispositivo },
+                where: { chave_dispositivo: req.body.chave_dispositivo },
             });
 
             res.status(200).json({
@@ -85,6 +88,32 @@ class Controller_Dados_Leitura{
         }
     }
 
+    public static async delete(req: Request<{}, {}, IDados_leitrua>, res: Response): Promise<void> {
+        try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
+            await Dados_Leitura.destroy({where: { 
+                chave_dispositivo: req.body.chave_dispositivo,
+                vez_lida: req.body.vez_lida
+                },
+            });
+
+            res.status(200).json({
+                message: "Dados_Leitura deletado.",
+                results: [],
+            });
+        } catch (err) {
+            res.status(200).json({
+                error_message: "Error deletar dados_leitura",
+                errors: err,
+            });
+        }
+    }
 
 };
 

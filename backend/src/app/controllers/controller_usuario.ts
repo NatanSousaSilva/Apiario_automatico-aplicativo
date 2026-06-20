@@ -15,6 +15,13 @@ class Controller_Usuario{
 
     public static async create_usuario_http(req: Request<{}, {}, IUsuario>, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             const partida = await Usuario.create({
                 id: req.body.id,
                 email: req.body.email,
@@ -36,8 +43,15 @@ class Controller_Usuario{
         }
     }
 
-    public static async read_usuarios(req: Request, res: Response): Promise<void> {
+    public static async list(req: Request, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             const usuarios = await Usuario.findAll();
 
             res.status(200).json({
@@ -52,10 +66,17 @@ class Controller_Usuario{
         }
     }
 
-    public static async update_usuario(req: Request, res: Response): Promise<void> {
+    public static async update(req: Request<{}, {}, IUsuario>, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             await Usuario.update(req.body, {
-                where: { id: req.params.id },
+                where: { id: req.body.id },
             });
 
             res.status(200).json({
@@ -70,10 +91,17 @@ class Controller_Usuario{
         }
     }
 
-    public static async delete_usuario(req: Request, res: Response): Promise<void> {
+    public static async delete(req: Request<{}, {}, IUsuario>, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             await Usuario.destroy({
-                where: { id: req.params.id },
+                where: { id: req.body.id },
             });
 
             res.status(200).json({
@@ -88,10 +116,17 @@ class Controller_Usuario{
         }
     }
 
-    public static async find_by_email_http(req: Request, res: Response): Promise<void> {
+    public static async find_by_email_http(req: Request<{}, {}, IUsuario>, res: Response): Promise<void> {
         try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
             const usuario = await Usuario.findOne({
-                where: { email: req.params.email },
+                where: { email: req.body.email },
             });
 
             res.status(200).json({
