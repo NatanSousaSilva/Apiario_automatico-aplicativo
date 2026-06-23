@@ -2,7 +2,11 @@ import { sequelize } from "../../config/config_db";
 import Sequelize, { Model } from "sequelize";
 import { Usuario } from "./usuario";
 
-class Dispositivo extends Model {}
+class Dispositivo extends Model {
+    declare chave: number;
+    declare idusuario: number;
+    declare senha: string | null;
+}
 
 Dispositivo.init({
     chave: {
@@ -21,7 +25,7 @@ Dispositivo.init({
     },
     senha: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
     },
 }, {
     sequelize,

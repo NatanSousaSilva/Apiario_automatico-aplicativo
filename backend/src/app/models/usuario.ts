@@ -1,7 +1,15 @@
 import { sequelize } from "../../config/config_db";
 import Sequelize, { Model } from "sequelize";
 
-class Usuario extends Model {}
+class Usuario extends Model {
+    declare id: number;
+    declare email: string;
+    declare senha: string | null;
+    declare google_id: string | null;
+    declare nome: string | null;
+    declare provedor_login: string;
+    declare admin: boolean;
+}
 
 Usuario.init({
     id: {
@@ -32,6 +40,11 @@ Usuario.init({
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'local',
+    },
+    admin: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
     },
 }, {
     sequelize,

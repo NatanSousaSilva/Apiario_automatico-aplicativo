@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
+import jwt from "jsonwebtoken";
 
 import { Controller_Usuario } from "./controller_usuario";
 
@@ -32,19 +33,33 @@ class Controller_Credential{
             }
 
             const email = payload.email;
-            const nome = payload.name;
-            const google_id = payload.sub;
-            const provedor_login = "google";
 
             let usuario = await Controller_Usuario.find_by_email_var(email);
 
             if (!usuario) {
-                usuario = await Controller_Usuario.create_usuario_var(nome, email, google_id, provedor_login);
+                const nome = payload.name;
+                const google_id = payload.sub;
+                const provedor_login = "google";
+                const senha = null;
+                const admin = false;
+
+                usuario = await Controller_Usuario.create_usuario_var(nome, email, google_id, provedor_login, senha, admin);
             }
 
+            const token_jwt = jwt.sign({
+                    id: usuario.id,
+                    email: usuario.email,
+                    nome: usuario.nome
+                },
+                process.env.JWT_SECRET as string,
+                {
+                    expiresIn: "7d"
+                }
+            );
+
             res.status(201).json({
-                messager: "Usuario",
-                results: usuario,
+                messager: "Login realizado",
+                results: token_jwt,
             });
             return;
 

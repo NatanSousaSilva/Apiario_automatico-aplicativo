@@ -1,45 +1,70 @@
-import { IUsuario } from "../interfaces/usuario";
+class Login{
+    constructor(){}
 
-async function handle_credential(response: google.accounts.id.CredentialResponse): Promise<void> {
-    const token = response.credential;
+    public static async login_google(response: google.accounts.id.CredentialResponse): Promise<void> {
+        const token = response.credential;
 
-    if (!token) {
-        throw new Error("Token não recebido.");
-    }
-
-    const resposta = await fetch("http://localhost:3000/credential/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-    });
-
-    if (!resposta.ok) {
-        throw new Error("Erro ao autenticar");
-    }
-
-    const dados = await resposta.json();
-
-    const usuario: IUsuario = dados.usuario;
-    const tokenJWT: string = dados.token;
-
-    localStorage.setItem("token", tokenJWT);
-
-    await acessar_dispositivos("/home");
-}
-
-async function acessar_dispositivos(rota: string) {
-
-    const token = localStorage.getItem("token");
-
-    const resposta = await fetch(rota, {
-        headers: {
-            Authorization: `Bearer ${token}`
+        if (!token) {
+            throw new Error("Token não recebido.");
         }
-    });
 
-    const dados = await resposta.json();
+        const resposta = await fetch("http://localhost:3000/credential/login_google", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+        });
 
-    console.log(dados);
-}
+        if (!resposta.ok) {
+            throw new Error("Erro ao autenticar");
+        }
+
+        const dados = await resposta.json();
+
+        const tokenJWT: string = dados.token;
+
+        localStorage.setItem("token", tokenJWT);
+
+        window.location.href = "/home";
+    }
+
+    public static async login_local(){
+        const email = (document.getElementById("email") as HTMLInputElement).value;
+        const senha = (document.getElementById("senha") as HTMLInputElement).value;
+
+        const resposta = await fetch("http://localhost:3000/credential/login_local",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email,
+                    senha
+                }),
+            }
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Email ou senha inválidos");
+        }
+
+        const dados = await resposta.json();
+
+        localStorage.setItem("token", dados.token);
+        window.location.href = "/home";
+    }
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("form_login_local");
+
+    if (form instanceof HTMLFormElement) {
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            await Login.login_local();
+        });
+    }
+});
+
+(window as any).login_google = Login.login_google;

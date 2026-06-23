@@ -114,6 +114,32 @@ class Controller_Dados_Leitura{
             });
         }
     }
+    public static async find_by_chave_vez(req: Request<{}, {}, IDados_leitrua>, res: Response): Promise<void> {
+        try {
+            if (!req.usuario?.id_usuario) {
+                res.status(401).json({
+                    erro: "Usuário não autenticado"
+                });
+                return;
+            }
+
+            const dispositivo = await Dados_Leitura.findOne({
+                where: { chave_dispositivo: Number(req.body.chave_dispositivo),
+                         vez_lida: Number(req.body.vez_lida)
+                 },
+            });
+
+            res.status(200).json({
+                message: "Dados_Leitura eoncontrado.",
+                results: [dispositivo],
+            });
+        } catch (err) {
+            res.status(500).json({
+                error_message: "Erro encontrar Dados_Leitura.",
+                error: err,
+            });
+        }
+    }
 
 };
 

@@ -8,6 +8,7 @@ interface IUsuario {
     google_id: string;
     nome: string;
     provedor_login: string;
+    admin: boolean;
 }
 
 class Controller_Usuario{
@@ -23,12 +24,12 @@ class Controller_Usuario{
             }
 
             const partida = await Usuario.create({
-                id: req.body.id,
                 email: req.body.email,
                 senha: req.body.senha,
-                google: req.body.google_id,
+                google_id: req.body.google_id,
                 nome: req.body.nome,
                 provedor_login: req.body.provedor_login,
+                admin: req.body.admin,
             });
 
             res.status(201).json({
@@ -141,12 +142,14 @@ class Controller_Usuario{
         }
     }
 
-    public static async create_usuario_var(nome: string, email: string, google_id: string | null, provedor_login: string): Promise<Usuario> {
+    public static async create_usuario_var(nome: string, email: string, google_id: string | null, provedor_login: string, senha: string | null, admin: boolean): Promise<Usuario> {
         return await Usuario.create({
             nome,
             email,
             google_id,
             provedor_login,
+            senha,
+            admin,
         });
     }
 
