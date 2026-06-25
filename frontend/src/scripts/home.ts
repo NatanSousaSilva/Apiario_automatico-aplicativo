@@ -1,7 +1,4 @@
-interface IDispositivo {
-    id_usuario: number;
-    chave: string;
-}
+import { IDispositivo } from "../interfaces/dispositivo";
 
 class Home{
     public static async listar_dispositivos(): Promise<void> {

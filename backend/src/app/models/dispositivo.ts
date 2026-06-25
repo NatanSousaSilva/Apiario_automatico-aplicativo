@@ -3,14 +3,14 @@ import Sequelize, { Model } from "sequelize";
 import { Usuario } from "./usuario";
 
 class Dispositivo extends Model {
-    declare chave: number;
+    declare chave: string;
     declare idusuario: number;
     declare senha: string | null;
 }
 
 Dispositivo.init({
     chave: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,

@@ -3,7 +3,7 @@ import { Dados_Leitura } from "../models/dados_leitura";
 
 interface IDados_leitrua {
     vez_lida: number;
-    chave_dispositivo: number;
+    chave_dispositivo: string;
     valor: string;
     sensor: string;
 

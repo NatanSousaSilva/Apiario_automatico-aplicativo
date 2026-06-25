@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Dispositivo } from "../models/dispositivo";
 
 interface IDispositivo {
-    chave: number;
+    chave: string;
     id_usuario: number;
     senha: string;
 }
@@ -10,7 +10,7 @@ interface IDispositivo {
 class Controller_Dispositivo{
     constructor() {}
 
-    public static async create_dispositivo(req: Request<{}, {}, IDispositivo>, res: Response,): Promise<void> {
+    public static async create(req: Request<{}, {}, IDispositivo>, res: Response,): Promise<void> {
         try {
             if (!req.usuario?.id_usuario) {
                 res.status(401).json({
@@ -87,7 +87,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async update_dispositivo(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
+    public static async update(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
         try {
             if (!req.usuario?.id_usuario) {
                 res.status(401).json({
@@ -112,7 +112,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async discociar_dispositivo(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
+    public static async discociar(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
         try {
             if (!req.usuario?.id_usuario) {
                 res.status(401).json({
@@ -137,7 +137,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async delete_dispositivo(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
+    public static async delete(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
         try {
             if (!req.usuario?.id_usuario) {
                 res.status(401).json({
