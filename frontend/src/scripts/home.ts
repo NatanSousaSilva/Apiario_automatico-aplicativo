@@ -7,19 +7,19 @@ class Home{
 
             if (!token) throw new Error("Usuário não autenticado");
 
-            const resposta = await fetch("http://localhost:3000/dispositivo/list",{
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const resposta = await fetch("http://localhost:3000/dispositivo/list_by_idusuario",{
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (!resposta.ok) {
-                throw new Error(`Erro HTTP: ${resposta.status}`);
+                const erro = await resposta.json();
+                throw new Error(erro.erro ?? `Erro HTTP: ${resposta.status}`);
             }
 
             const dados = await resposta.json();
-            const dispositivos: IDispositivo[] = await dados.json();
+            const dispositivos: IDispositivo[] = dados.results;
             
 
             const lista = document.getElementById("lista_dispositivo");
@@ -66,20 +66,24 @@ class Home{
         try {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                throw new Error("Usuário não autenticado");
+            }
+
             const resposta = await fetch(`http://localhost:3000/dispositivo/delete`,{
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        chave
-                    })
-                }
-            );
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chave
+                })
+            });
 
             if (!resposta.ok) {
-                throw new Error(`Erro HTTP: ${resposta.status}`);
+                const erro = await resposta.json();
+                throw new Error(erro.erro ?? `Erro HTTP: ${resposta.status}`);
             }
 
         } catch (erro) {

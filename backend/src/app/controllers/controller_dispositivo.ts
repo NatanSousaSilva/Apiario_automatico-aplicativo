@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { Dispositivo } from "../models/dispositivo";
+import { Dispositivo } from "../models/index";
 
 interface IDispositivo {
     chave: string;
-    id_usuario: number;
+    id_usuario: number | null;
     senha: string;
 }
 
@@ -21,13 +21,18 @@ class Controller_Dispositivo{
 
             const dispositivo = await Dispositivo.create({
                 chave: req.body.chave,
-                id_usuario: req.body.id_usuario,
                 senha: req.body.senha,
             });
 
+            if (!dispositivo) {
+                res.status(400).json({
+                    error_message: "Não foi possível criar o dispositivo."
+                });
+                return;
+            }
+
             res.status(201).json({
                 success_message: "Dispositivo registrado.",
-                results: [],
             });
         } catch (err) {
             res.status(500).json({
@@ -46,7 +51,11 @@ class Controller_Dispositivo{
                 return;
             }
             
-            const dispositivos = await Dispositivo.findAll();
+            const dispositivos = await Dispositivo.findAll({
+                attributes: {
+                    exclude: ["senha"],
+                },
+            });
 
             res.status(200).json({
                 message: "Dispositivos listados.",
@@ -72,7 +81,10 @@ class Controller_Dispositivo{
             }
 
             const dispositivos = await Dispositivo.findAll({
-                where: { id_usuario: id_usuario}
+                where: { id_usuario: id_usuario},
+                attributes: {
+                    exclude: ["senha"],
+                },
             });
 
             res.status(200).json({
@@ -87,7 +99,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async update(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
+    public static async associar(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
         try {
             if (!req.usuario?.id_usuario) {
                 res.status(401).json({
@@ -96,13 +108,12 @@ class Controller_Dispositivo{
                 return;
             }
 
-            await Dispositivo.update(req.body, {
-                where: { chave: Number(req.body.chave) },
+            await Dispositivo.update({id_usuario: req.body.id_usuario}, {
+                where: { chave: req.body.chave },
             });
 
             res.status(200).json({
                 message: "Dispositivo editado.",
-                results: [],
             });
         } catch (err) {
             res.status(500).json({
@@ -112,7 +123,7 @@ class Controller_Dispositivo{
         }
     }
 
-    public static async discociar(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
+    public static async desassoociar(req: Request<{}, {}, IDispositivo>, res: Response): Promise<void> {
         try {
             if (!req.usuario?.id_usuario) {
                 res.status(401).json({
@@ -122,12 +133,11 @@ class Controller_Dispositivo{
             }
 
             await Dispositivo.update({ id_usuario: null }, {
-                where: { chave: Number(req.body.chave) },
+                where: { chave: req.body.chave },
             });
 
             res.status(200).json({
                 message: "Dispositivo editado.",
-                results: [],
             });
         } catch (err) {
             res.status(500).json({
@@ -146,16 +156,22 @@ class Controller_Dispositivo{
                 return;
             }
 
-            await Dispositivo.destroy({
-                where: { chave: Number(req.body.chave) },
+            const dispositivo = await Dispositivo.destroy({
+                where: { chave: req.body.chave },
             });
+
+            if (!dispositivo) {
+                res.status(404).json({
+                    erro: "Dispositivo não encontrada."
+                });
+                return;
+            }
 
             res.status(200).json({
                 message: "Dispositivo deletado.",
-                results: [],
             });
         } catch (err) {
-            res.status(200).json({
+            res.status(500).json({
                 error_message: "Error deletar dispositivo",
                 errors: err,
             });
@@ -172,12 +188,12 @@ class Controller_Dispositivo{
             }
 
             const dispositivo = await Dispositivo.findOne({
-                where: { chave: Number(req.body.chave) },
+                where: { chave: req.body.chave },
             });
 
             res.status(200).json({
                 message: "Dispositivo encontrado.",
-                results: [dispositivo],
+                results: dispositivo,
             });
         } catch (err) {
             res.status(500).json({

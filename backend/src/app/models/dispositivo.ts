@@ -1,37 +1,39 @@
 import { sequelize } from "../../config/config_db";
-import Sequelize, { Model } from "sequelize";
+import { DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, Model } from "sequelize";
+
 import { Usuario } from "./usuario";
 
-class Dispositivo extends Model {
+class Dispositivo extends Model<InferAttributes<Dispositivo>, InferCreationAttributes<Dispositivo>> {
     declare chave: string;
-    declare idusuario: number;
-    declare senha: string | null;
+    declare id_usuario: number | null;
+    declare senha: string;
 }
 
 Dispositivo.init({
     chave: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
     },
-    idusuario: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+    id_usuario: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
         references: {
             model: Usuario,
-            key: 'id',
+            key: "id",
         },
     },
     senha: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
     },
 }, {
     sequelize,
-    timestamps: false,
     tableName: "dispositivos",
     modelName: "Dispositivo",
-});
+    paranoid: true,
+    timestamps: true,
+}
+);
 
 export { Dispositivo };

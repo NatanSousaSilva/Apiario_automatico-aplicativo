@@ -17,19 +17,22 @@ class Login{
         });
 
         if (!resposta.ok) {
-            throw new Error("Erro ao autenticar");
+            const erro = await resposta.json();
+            throw new Error(erro.erro ?? `Erro HTTP: ${resposta.status}`);
         }
 
         const dados = await resposta.json();
 
-        const tokenJWT: string = dados.token;
+        if (!dados.token) {
+            throw new Error("Token não recebido");
+        }
 
-        localStorage.setItem("token", tokenJWT);
+        localStorage.setItem("token", dados.token);
 
         window.location.href = "/home";
     }
 
-    public static async login_local(){
+    public static async login_local(): Promise<void> {
         const email = (document.getElementById("email") as HTMLInputElement).value;
         const senha = (document.getElementById("senha") as HTMLInputElement).value;
 
@@ -46,7 +49,8 @@ class Login{
         );
 
         if (!resposta.ok) {
-            throw new Error("Email ou senha inválidos");
+            const erro = await resposta.json();
+            throw new Error(erro.erro ?? `Erro HTTP: ${resposta.status}`);
         }
 
         const dados = await resposta.json();

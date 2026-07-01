@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Usuario } from "../models/usuario";
+import { Usuario } from "../models/index";
 
 interface IUsuario {
     id: number;
@@ -20,10 +20,10 @@ class Controller_Usuario{
                 res.status(401).json({
                     erro: "Usuário não autenticado"
                 });
-                return;
+                return; 
             }
 
-            const partida = await Usuario.create({
+            const usuario = await Usuario.create({
                 email: req.body.email,
                 senha: req.body.senha,
                 google_id: req.body.google_id,
@@ -32,13 +32,20 @@ class Controller_Usuario{
                 admin: req.body.admin,
             });
 
+            if (!usuario) {
+                res.status(400).json({
+                    error_message: "Não foi possível criar o usuário."
+                });
+                return;
+            }
+
             res.status(201).json({
-                success_message: "Usuario registrada.",
-                results: [],
+                success_message: "Usuário cadastrado com sucesso.",
             });
+
         } catch (err) {
             res.status(500).json({
-                error_message: "Erro cadastro usuario.",
+                error_message: "Erro ao cadastrar usuário.",
                 error: err,
             });
         }
@@ -53,7 +60,11 @@ class Controller_Usuario{
                 return;
             }
 
-            const usuarios = await Usuario.findAll();
+            const usuarios = await Usuario.findAll({
+                attributes: {
+                    exclude: ["senha"],
+                },
+            });
 
             res.status(200).json({
                 message: "Usuarios listados.",
@@ -76,13 +87,19 @@ class Controller_Usuario{
                 return;
             }
 
-            await Usuario.update(req.body, {
-                where: { id: req.body.id },
-            });
+            const usuario = await Usuario.findByPk(req.body.id);
+
+            if (!usuario) {
+                res.status(404).json({
+                    message: "Usuário não encontrado."
+                });
+                return;
+            }
+
+            await usuario.update(req.body);
 
             res.status(200).json({
                 message: "Usuario editado.",
-                results: [],
             });
         } catch (err) {
             res.status(500).json({
@@ -100,17 +117,22 @@ class Controller_Usuario{
                 });
                 return;
             }
-
-            await Usuario.destroy({
+            const usuario = await Usuario.destroy({
                 where: { id: req.body.id },
             });
 
+            if (!usuario) {
+                res.status(404).json({
+                    erro: "Usuario não encontrada."
+                });
+                return;
+            }
+
             res.status(200).json({
-                message: "Usuario deletada.",
-                results: [],
+                message: "Usuario deletado.",
             });
         } catch (err) {
-            res.status(200).json({
+            res.status(500).json({
                 error_message: "Error deletar usuario",
                 errors: err,
             });
@@ -128,11 +150,14 @@ class Controller_Usuario{
 
             const usuario = await Usuario.findOne({
                 where: { email: req.body.email },
+                attributes: {
+                    exclude: ["senha"],
+                },
             });
 
             res.status(200).json({
                 message: "Usuario encontrado.",
-                results: [usuario],
+                results: usuario,
             });
         } catch (err) {
             res.status(500).json({
@@ -142,7 +167,7 @@ class Controller_Usuario{
         }
     }
 
-    public static async create_usuario_var(nome: string, email: string, google_id: string | null, provedor_login: string, senha: string | null, admin: boolean): Promise<Usuario> {
+    public static async create_usuario_var(nome: string | null, email: string, google_id: string | null, provedor_login: string, senha: string | null, admin: boolean): Promise<Usuario> {
         return await Usuario.create({
             nome,
             email,
@@ -154,14 +179,14 @@ class Controller_Usuario{
     }
 
     public static async find_by_email_var(email: string): Promise<Usuario | null> {
-        return await Usuario.findOne({
-            where: {
-                email,
-            },
+        const usuario = await Usuario.findOne({
+        where: {
+            email,
+        },
         });
+
+        return usuario;
     }
-
-
 };
 
 export {Controller_Usuario};
