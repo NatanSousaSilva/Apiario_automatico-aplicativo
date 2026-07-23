@@ -9,17 +9,17 @@ type Grafico =
     | "grafico_ruido";
 
 class Dados_Dispositivo {
-    private static grafico_ruido: Chart | null = null;
-    private static grafico_humidade: Chart | null = null;
-    private static grafico_temperatura: Chart | null = null;
-    private static grafico_peso: Chart | null = null;
+    private static grafico_ruido: Chart<"line"> | null = null;
+    private static grafico_humidade: Chart<"line"> | null = null;
+    private static grafico_temperatura: Chart<"line"> | null = null;
+    private static grafico_peso: Chart<"line"> | null = null;
 
     public static async carregar_dados(): Promise<void> {
         try {
             const token = localStorage.getItem("token");
-            const chave = localStorage.getItem("dispositivo_atual");
+            const chave_dispositivo = localStorage.getItem("dispositivo_atual");
 
-            if (!token || !chave) {
+            if (!token || !chave_dispositivo) {
                 throw new Error("Dispositivo não selecionado");
             }
 
@@ -30,7 +30,7 @@ class Dados_Dispositivo {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    chave
+                    chave_dispositivo
                 })
             });
 
@@ -39,7 +39,8 @@ class Dados_Dispositivo {
                 throw new Error(erro.erro ?? `Erro HTTP: ${resposta.status}`);
             }
 
-            const leituras: IDados_Leitura[] = await resposta.json();
+            const dados = await resposta.json();
+            const leituras: IDados_Leitura[] = dados.results;
 
             this.processar_dados(leituras);
 
@@ -49,17 +50,16 @@ class Dados_Dispositivo {
     }
 
     private static processar_dados(leituras: IDados_Leitura[]): void {
-        const temperatura = leituras.filter(item => item.sensor === "temperatura")
-            .sort((a, b) => a.vez_lida - b.vez_lida);
+        const filtrar_sortear = (tipo_sensor: string) => {
+            return leituras
+                .filter(item => item.sensor === tipo_sensor)
+                .sort((a, b) => a.vez_lida - b.vez_lida);
+        };
 
-        const humidade = leituras.filter(item => item.sensor === "humidade")
-            .sort((a, b) => a.vez_lida - b.vez_lida);
-
-        const peso = leituras.filter(item => item.sensor === "peso")
-            .sort((a, b) => a.vez_lida - b.vez_lida);
-
-        const ruido = leituras.filter(item => item.sensor === "ruido")
-            .sort((a, b) => a.vez_lida - b.vez_lida);
+        const temperatura = filtrar_sortear("temperatura");
+        const humidade = filtrar_sortear("humidade");
+        const peso = filtrar_sortear("peso");
+        const ruido = filtrar_sortear("ruido");
 
         this.atualizar_grafico(
             "grafico_temperatura",
@@ -127,11 +127,11 @@ class Dados_Dispositivo {
     }
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-    await Dados_Dispositivo.carregar_dados();
-
-    setInterval(async () => {
+window.addEventListener("DOMContentLoaded", () => {
+    async function rodarLoop() {
         await Dados_Dispositivo.carregar_dados();
-    }, 5000);
-
+        setTimeout(rodarLoop, 5000);
+    }
+    
+    rodarLoop();
 });
