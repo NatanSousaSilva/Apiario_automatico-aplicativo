@@ -7,6 +7,8 @@ import { dados_leitura } from "../routes/dados_leitura";
 import { paginas } from "../routes/paginas";
 import { credencial } from "../routes/credencial";
 
+import path from "path";
+
 const Server = express();
 
 Server.use(express.json());
@@ -19,11 +21,17 @@ Server.use(
   })
 );
 
-Server.get("/", (req, res) => {
-  res.status(200).json({
-    message: "test",
-  });
-});
+Server.use(
+    express.static(
+        path.join(__dirname, "../../../frontend/src")
+    )
+);
+Server.use(
+    express.static(
+        path.join(__dirname, "../../../frontend/dist/scripts")
+    )
+);
+
 
 Server.use("/", paginas);
 Server.use("/usuario", usuario);

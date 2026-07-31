@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
 
-    "types": ["node"],
+    "types": ["node", "google.accounts"],
     "typeRoots": ["./node_modules/@types", "./src/@types"]
   },
   "include": ["src/**/*"],

@@ -8,6 +8,7 @@ Server.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
 
+/*
 async function teste() {
     try {
         await sequelize.authenticate();
@@ -40,3 +41,4 @@ async function teste() {
 }
 
 teste();
+*/

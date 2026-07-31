@@ -6,6 +6,7 @@
     <title>Login</title>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script type="module" src="../../dist/scripts/login.js"></script>
 
     <link rel="stylesheet" href="../styles/login.css">
 </head>
@@ -18,7 +19,7 @@
 
         <div class="card">
             <h2>Entrar</h2>
-            <form action="form_login_local" method="post">
+            <form id="form_login_local" method="post">
 
                 <label for="email">E-mail:</label>
                 <input type="email" id="email" name="email" required>
@@ -39,7 +40,7 @@
             <h2>Entrar com Google</h2>
 
             <div id="g_id_onload"
-                data-client_id="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"
+                data-client_id="952536588486-59c2jrm3e729ka61utvk5k3th25kffj9.apps.googleusercontent.com"
                 data-callback="login_google">
             </div>
 
