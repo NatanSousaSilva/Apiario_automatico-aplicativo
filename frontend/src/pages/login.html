@@ -1,58 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login</title>
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script type="module" src="../../dist/scripts/login.js"></script>
-
     <link rel="stylesheet" href="../styles/login.css">
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="../scripts/login.js"></script>
+    
 </head>
+
 <body>
     <div class="container">
-
-        <div>
-            <h1>Abelhas do Seridó 4.0</h1>
-        </div>
+        <div><h1>Abelhas do Seridó 4.0</h1></div>
 
         <div class="card">
             <h2>Entrar</h2>
-            <form id="form_login_local" method="post">
 
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" required>
+            <form id="form_login_local">
+                <label for="email_login">E-mail:</label>
+                <input type="email" id="email_login" required>
 
-                <label for="senha">Senha:</label>
-                <input type="password" id="senha" name="senha" required>
+                <label for="senha_login">Senha:</label>
+                <input type="password" id="senha_login" required>
 
                 <input type="submit" value="Entrar">
                 <input type="reset" value="Limpar">
-
             </form>
 
-            <a href="#">Esqueceu a senha?</a>
-            <a href="#">Criar conta</a>
+            <a href="#" id="abrir_recuperar_senha">Esqueceu a senha?</a>
+            <a href="#" id="abrir_cadastro">Criar conta</a>
         </div>
 
         <div class="card">
             <h2>Entrar com Google</h2>
-
             <div id="g_id_onload"
-                data-client_id="952536588486-59c2jrm3e729ka61utvk5k3th25kffj9.apps.googleusercontent.com"
-                data-callback="login_google">
-            </div>
-
+                data-client_id="8984760361-j0of6b1dsilkeqpf6a8kni011723ihf5.apps.googleusercontent.com"
+                data-callback="login_google"
+            ></div>
             <div class="g_id_signin"
                 data-type="standard"
                 data-size="large"
                 data-theme="filled_blue"
                 data-text="signin_with"
-                data-shape="rectangular">
+                data-shape="rectangular"
+            ></div>
+        </div>
+
+  
+        <!-- Modals -->
+        <div id="modal_cadastro" class="modal">
+            <div class="modal_conteudo">
+                <span class="fechar">&times;</span>
+                <h2>Criar Conta</h2>
+
+                <form id="form_cadastro">
+                    <label for="nome_cadastro">Nome:</label>
+                    <input type="text" id="nome_cadastro" required>
+
+                    <label for="email_cadastro">E-mail:</label>
+                    <input type="email" id="email_cadastro" required>
+
+                    <label for="senha_cadastro">Senha:</label>
+                    <input type="password" id="senha_cadastro" required>
+
+                    <input type="submit" value="Cadastrar">
+                </form>
+            </div>
+        </div>
+
+        <div id="modal_recuperar_senha" class="modal">
+            <div class="modal_conteudo">
+                <span class="fechar">&times;</span>
+                <h2>Recuperar Senha</h2>
+                <p>Digite seu E-mail e aperte Confirmar</p>
+
+                <form id="form_recuperar_senha">
+                    <label for="email_recuperar_senha">E-mail:</label>
+                    <input type="email" id="email_recuperar_senha" required>
+
+                    <label for="confirmacao_email_recuperar_senha">Confirme seu E-mail:</label>
+                    <input type="email" id="confirmacao_email_recuperar_senha" required>
+
+                    <input type="submit" value="Confirmar">
+                </form>
             </div>
         </div>
 
     </div>
 </body>
+
 </html>

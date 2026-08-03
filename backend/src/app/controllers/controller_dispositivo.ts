@@ -19,6 +19,19 @@ class Controller_Dispositivo{
                 return;
             }
 
+            const dispositivo_existe = await Dispositivo.findOne({
+                where: {
+                    chave: req.body.chave
+                }
+            });
+
+            if (dispositivo_existe) {
+                res.status(400).json({
+                    error_message: "Dispositivo já existente."
+                });
+                return;
+            }
+
             const dispositivo = await Dispositivo.create({
                 chave: req.body.chave,
                 senha: req.body.senha,

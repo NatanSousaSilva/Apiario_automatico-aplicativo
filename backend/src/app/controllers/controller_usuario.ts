@@ -16,11 +16,17 @@ class Controller_Usuario{
 
     public static async create_usuario_http(req: Request<{}, {}, IUsuario>, res: Response): Promise<void> {
         try {
-            if (!req.usuario?.id_usuario) {
-                res.status(401).json({
-                    erro: "Usuário não autenticado"
+            const usuario_existe = await Usuario.findOne({
+                where: {
+                    email: req.body.email
+                }
+            });
+
+            if (usuario_existe) {
+                res.status(400).json({
+                    error_message: "Usuário já existente."
                 });
-                return; 
+                return;
             }
 
             const usuario = await Usuario.create({

@@ -46,9 +46,7 @@ class Controller_Credential {
                 return;
             }
 
-            let usuario = await Controller_Usuario.find_by_email_var(
-                payload.email
-            );
+            let usuario = await Controller_Usuario.find_by_email_var(payload.email);
 
             if (!usuario) {
                 usuario = await Controller_Usuario.create_usuario_var(payload.name, payload.email, payload.sub, "google", null, false);
@@ -187,6 +185,8 @@ class Controller_Credential {
             });
         }
     }
+
+    public async 
 }
 
 export { Controller_Credential };

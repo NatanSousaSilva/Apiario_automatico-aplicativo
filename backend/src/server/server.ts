@@ -26,11 +26,6 @@ Server.use(
         path.join(__dirname, "../../../frontend/src")
     )
 );
-Server.use(
-    express.static(
-        path.join(__dirname, "../../../frontend/dist/scripts")
-    )
-);
 
 
 Server.use("/", paginas);
