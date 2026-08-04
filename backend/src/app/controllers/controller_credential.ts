@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
+import { randomInt } from "crypto";
 
 import { Controller_Usuario } from "./controller_usuario";
 
@@ -186,7 +188,25 @@ class Controller_Credential {
         }
     }
 
-    public async 
+    public static async enviar_email_recuperacao(req: Request<{}, {}, IUsuario>, res: Response): Promise<void> {
+        const { email } = req.body; 
+        const codigo = randomInt(100000, 1000000);
+
+        await Controller_Credential.transporter.sendMail({
+            from: '"Abelhas do Seridó 4.0" <abelhaspaas@gmail.com>',
+            to: email,
+            subject: "Recuperação de senha",
+            text: `Seu código de recuperação é: ${codigo}`
+        });
+    }
+
+    private static transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_USER as string,
+            pass: process.env.EMAIL_PASSWORD as string
+        }
+    });
 }
 
 export { Controller_Credential };

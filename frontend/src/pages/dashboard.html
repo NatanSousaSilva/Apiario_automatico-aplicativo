@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrativo</title>
+
+    <link rel="stylesheet" href="../styles/dashboard.css">
+</head>
+<body>
+
+    <header>
+        <h1>Dashboard Administrativo</h1>
+        <div class="usuario_logado">
+            <span>Natan</span>
+            <button>Sair</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="cards_resumo">
+            <div class="card">
+                <h3>Usuários</h3>
+                <p>24</p>
+            </div>
+
+            <div class="card">
+                <h3>Dispositivos</h3>
+                <p>18</p>
+            </div>
+        </section>
+
+        <!-- Painéis lado a lado -->
+        <section class="painel_container">
+
+            <!-- Usuários -->
+            <section class="painel">
+                <div class="painel_header">
+                    <h2>Controle de Usuários</h2>
+                    <button class="btn">+ Novo Usuário</button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Perfil</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>João Silva</td>
+                            <td>joao@email.com</td>
+                            <td>Administrador</td>
+                            <td>
+                                <button class="editar">Editar</button>
+                                <button class="remover">Remover</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Maria Souza</td>
+                            <td>maria@email.com</td>
+                            <td>Usuário</td>
+                            <td>
+                                <button class="editar">Editar</button>
+                                <button class="remover">Remover</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Dispositivos -->
+            <section class="painel">
+                <div class="painel_header">
+                    <h2>Controle de Dispositivos</h2>
+                    <button class="btn">+ Novo Dispositivo</button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Chave</th>
+                            <th>Dono</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>3123</td>
+                            <td>Emerson</td>
+                            <td>
+                                <button class="editar">Editar</button>
+                                <button class="remover">Remover</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>3243</td>
+                            <td>Emerson</td>
+                            <td>
+                                <button class="editar">Editar</button>
+                                <button class="remover">Remover</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

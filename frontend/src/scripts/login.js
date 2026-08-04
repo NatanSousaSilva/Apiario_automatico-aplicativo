@@ -86,7 +86,7 @@ class Login {
         const email = email_input.value.trim();
         const senha = senha_input.value;
 
-        const resposta = await fetch("${URL_base}/usuario/create",{
+        const resposta = await fetch(`${URL_base}/credential/cadastro_local`,{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -95,9 +95,6 @@ class Login {
                 nome: nome,
                 email: email,
                 senha: senha,
-                google_id: null,
-                provedor_login: null,
-                admin: null
             })
         });
 
@@ -113,7 +110,37 @@ class Login {
     }
 
     static async recuperar_senha() {
+        const email = document.getElementById("email_recuperar_senha");
+        const email_confirmacao = document.getElementById("confirmacao_email_recuperar_senha");
 
+        if (!email || !email_confirmacao) {
+            throw new Error("Campos de E-mail não encontrados.");
+        }
+
+        if (email != email_confirmacao) {
+            throw new Error("E-mail não correspondentes.");
+        }
+
+        const email = email_input.value.trim();
+
+        const resposta = await fetch(`${URL_base}/credential/email_recuperacao`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+            })
+        });
+
+        if (!resposta.ok) {
+            const erro = await resposta.json();
+
+            throw new Error(
+                erro.erro ??
+                `Erro HTTP: ${resposta.status}`
+            );
+        }
 
     }
 }
@@ -132,6 +159,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 await Login.login_local();
             } catch (erro) {
                 console.error("Erro no login:", erro);
+                alert("Erro no login");
             }
         });
     }
@@ -157,6 +185,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
             } catch (erro) {
                 console.error("Erro no cadastro:", erro);
+                alert("Erro no cadastro");
             }
         });
     }
@@ -170,8 +199,21 @@ window.addEventListener("DOMContentLoaded", () => {
             event.preventDefault();
             try {
                 await Login.recuperar_senha();
+
+                alert("Conta criada com sucesso!");
+
+                form_recuperar_senha.reset();
+
+                const modal_recuperar_senha = document.getElementById("modal_recuperar_senha");
+                if (modal_recuperar_senha) {
+                    modal_recuperar_senha.style.display = "none";
+                }
+
+
+
             } catch (erro) {
                 console.error("Erro na Recuperação:", erro);
+                alert("Erro na Recuperação");
             }
         });
     }
@@ -228,8 +270,37 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+
+    //////
+
+
+    const modal_validar_codigo_recuperacao = document.getElementById("modal_validar_codigo_recuperacao");
+
+    if (modal_validar_codigo_recuperacao) {
+        const fechar = modal_validar_codigo_recuperacao.querySelector(".fechar");
+
+        fechar.addEventListener("click", () => {
+            modal_validar_codigo_recuperacao.style.display = "none";
+        });
+
+    }
+
+
+    //////
+
+    const modal_nova_senha = document.getElementById("modal_nova_senha");
+
+    if (modal_nova_senha) {
+        const fechar = modal_nova_senha.querySelector(".fechar");
+
+        fechar.addEventListener("click", () => {
+            modal_nova_senha.style.display = "none";
+        });
+    }
+
 });
 
 window.login_google = (response) => {Login.login_google(response).catch(erro => {
     console.error("Erro no login Google:", erro);
+    alert("Erro no login Google");
 });};
