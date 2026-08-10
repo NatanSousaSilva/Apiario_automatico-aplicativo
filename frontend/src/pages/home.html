@@ -8,19 +8,37 @@
     <script type="module" src="../scripts/home.js"></script>
 
     <link rel="stylesheet" href="../styles/home.css">
+    <link rel="stylesheet" href="../styles/formulario.css">
 </head>
 <body>
     <header>
         <h1>Gerenciar Dispositívos</h1>
 
         <div>
-            <a href="#">Cadastrar dispositivo</a>
-            <a href="#">Trocar de Conta</a>     
+            <a href="#" id="abrir_associar_dispositivo">Cadastrar dispositivo</a>
+            <a href="#" id="voltar_login">Trocar de Conta</a>     
         </div>
     </header>
 
     <main>
         <div id="lista_dispositivos"></div>
+
+        <div id="modal_associar_dispositivo" class="modal">
+            <div class="modal_conteudo">
+                <span class="fechar">&times;</span>
+                <h2>Cadastrar Dispositivo</h2>
+
+                <form id="form_associar_dispositivo">
+                    <label for="chave_dispositivo">Chave:</label>
+                    <input type="text" id="chave_dispositivo" required>
+
+                    <label for="senha_dispositivo">Senha:</label>
+                    <input type="password" id="senha_dispositivo" required>
+
+                    <input type="submit" value="Cadastrar">
+                </form>
+            </div>
+        </div>
     </main>
 </body>
 </html>

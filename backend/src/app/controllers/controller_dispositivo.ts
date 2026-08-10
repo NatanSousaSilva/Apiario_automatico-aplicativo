@@ -121,13 +121,27 @@ class Controller_Dispositivo{
                 return;
             }
 
-            await Dispositivo.update({id_usuario: req.body.id_usuario}, {
-                where: { chave: req.body.chave },
-            });
+            const [quantidade_atualizada] = await Dispositivo.update({
+                id_usuario: req.usuario.id_usuario},{
+                    where: {
+                        chave: req.body.chave,
+                        senha: req.body.senha
+                    }
+                }
+            );
+
+            if (quantidade_atualizada === 0) {
+                res.status(404).json({
+                    erro: "Dispositivo não encontrado ou senha incorreta."
+                });
+
+                return;
+            }
 
             res.status(200).json({
                 message: "Dispositivo editado.",
             });
+
         } catch (err) {
             res.status(500).json({
                 error_message: "Erro editar dispositivo.",

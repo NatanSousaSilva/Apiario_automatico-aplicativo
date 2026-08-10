@@ -12,7 +12,7 @@ interface IDados_leitura {
 class Controller_Dados_Leitura{
     constructor() {}
 
-    public static async create(req: Request<{}, {}, IDados_leitura>, res: Response): Promise<void> {
+    public static async create_http(req: Request<{}, {}, IDados_leitura>, res: Response): Promise<void> {
         try {
             const ultima = await Dados_Leitura.max("vez_lida", {
                 where: {
@@ -154,6 +154,33 @@ class Controller_Dados_Leitura{
         }
     }
 
+    public static async create_var(chave_dispositivo: string, valor: string, sensor: string): Promise<Dados_Leitura | null>{
+        try{
+            const ultima = await Dados_Leitura.max("vez_lida", {
+                where: {
+                    chave_dispositivo: chave_dispositivo,
+                },
+            }) as number | null;
+
+            const vez_lida = (ultima ?? 0) + 1;
+
+            const dados_leitura = await Dados_Leitura.create({
+                vez_lida,
+                chave_dispositivo: chave_dispositivo,
+                valor: valor,
+                sensor: sensor,
+            });
+
+            if (!dados_leitura) {
+                return null;
+            }
+
+            return dados_leitura;
+        } catch {
+            return null;
+        }
+        
+    };
 };
 
 export {Controller_Dados_Leitura};

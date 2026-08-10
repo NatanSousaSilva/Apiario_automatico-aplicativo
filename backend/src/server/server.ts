@@ -32,6 +32,6 @@ Server.use("/", paginas);
 Server.use("/usuario", usuario);
 Server.use("/dispositivo", dispositivo);
 Server.use("/dados_leitura", dados_leitura);
-Server.use("/credencial", credencial);
+Server.use("/credential", credencial);
 
 export default Server;

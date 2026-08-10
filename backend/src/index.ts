@@ -2,7 +2,7 @@ import Server from "./server/server";
 import { sequelize } from "./config/config_db";
 import { Usuario } from "./app/models";
 
-const PORT = 3001;
+const PORT = 3000;
 
 Server.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);

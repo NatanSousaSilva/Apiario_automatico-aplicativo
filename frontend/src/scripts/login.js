@@ -1,7 +1,10 @@
-import { URL_base } from "./url";
+import { definir_formulario, definir_modal } from "./functions.js";
+import { URL_base } from "./url.js";
 
 class Login {
     constructor() {}
+
+    static
 
     static async login_google(response) {
         const token = response.credential;
@@ -108,28 +111,34 @@ class Login {
         }
 
     }
+    
+}
 
-    static async recuperar_senha() {
-        const email = document.getElementById("email_recuperar_senha");
-        const email_confirmacao = document.getElementById("confirmacao_email_recuperar_senha");
+class Recuperar_Senha {
+    static async solicitar_recuperacao_senha() {
+        const emailInput = document.getElementById("email_recuperar_senha");
+        const emailConfirmacaoInput = document.getElementById("confirmacao_email_recuperar_senha");
 
-        if (!email || !email_confirmacao) {
-            throw new Error("Campos de E-mail não encontrados.");
+        if (!emailInput || !emailConfirmacaoInput) {
+            throw new Error("Campos de e-mail não encontrados.");
         }
 
-        if (email != email_confirmacao) {
-            throw new Error("E-mail não correspondentes.");
+        const email = emailInput.value.trim();
+        const emailConfirmacao = emailConfirmacaoInput.value.trim();
+
+        if (email !== emailConfirmacao) {
+            throw new Error("E-mails não correspondem.");
         }
 
-        const email = email_input.value.trim();
+        localStorage.setItem("email_recuperacao", email);
 
-        const resposta = await fetch(`${URL_base}/credential/email_recuperacao`,{
+        const resposta = await fetch(`${URL_base}/credential/email_recuperacao`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                email: email,
+                email: email
             })
         });
 
@@ -141,7 +150,83 @@ class Login {
                 `Erro HTTP: ${resposta.status}`
             );
         }
+    }
 
+    static async validar_codigo() {
+        const codigoInput = document.getElementById("codigo_recuperacao");
+
+        if (!codigoInput) {
+            throw new Error("Campo de código não encontrado.");
+        }
+
+        const codigo = codigoInput.value.trim();
+        const email = localStorage.getItem("email_recuperacao");
+
+        if (!email) {
+            throw new Error("E-mail de recuperação não encontrado.");
+        }
+
+        const resposta = await fetch(`${URL_base}/credential/validar_codigo`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email,
+                codigo
+            })
+        });
+
+        if (!resposta.ok) {
+            const erro = await resposta.json();
+            throw new Error(
+                erro.erro ??
+                `Erro HTTP: ${resposta.status}`
+            );
+        }
+    }
+
+    static async alterar_senha() {
+        const senhaInput = document.getElementById("nova_senha");
+        const confirmarSenhaInput = document.getElementById("confirmar_nova_senha");
+
+        if (!senhaInput || !confirmarSenhaInput) {
+            throw new Error("Campos de senha não encontrados.");
+        }
+
+        const senha = senhaInput.value;
+        const confirmarSenha = confirmarSenhaInput.value;
+
+        if (senha !== confirmarSenha) {
+            throw new Error("As senhas não correspondem.");
+        }
+
+        const email = localStorage.getItem("email_recuperacao");
+
+        if (!email) {
+            throw new Error("E-mail de recuperação não encontrado.");
+        }
+
+        const resposta = await fetch(`${URL_base}/credential/alterar_senha`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email,
+                senha
+            })
+        });
+
+        if (!resposta.ok) {
+            const erro = await resposta.json();
+            throw new Error(
+                erro.erro ??
+                `Erro HTTP: ${resposta.status}`
+            );
+        }
+
+        localStorage.removeItem("email_recuperacao");
     }
 }
 
@@ -150,153 +235,52 @@ class Login {
 
 
 window.addEventListener("DOMContentLoaded", () => {
-    const form_login_local = document.getElementById("form_login_local");
-    
-    if (form_login_local instanceof HTMLFormElement) {
-        form_login_local.addEventListener("submit", async (event) => {
-            event.preventDefault();
-            try {
-                await Login.login_local();
-            } catch (erro) {
-                console.error("Erro no login:", erro);
-                alert("Erro no login");
-            }
-        });
-    }
+    definir_formulario(
+        "form_login_local",
+        () => Login.login_local(),
+        null,
+        null,
+        "Login realizado com sucesso!"
+    );
 
-    //////
-    
-    const form_cadastro = document.getElementById("form_cadastro");
+    definir_formulario(
+        "form_cadastro",
+        () => Login.cadastro_local(),
+        "modal_cadastro",
+        null,
+        "Conta criada com sucesso!"
+    );
 
-    if (form_cadastro instanceof HTMLFormElement) {
-        form_cadastro.addEventListener("submit", async (event) => {
-            event.preventDefault();
-            try {
-            await Usuario.cadastro_local();
+    definir_formulario(
+        "form_recuperar_senha",
+        () => Recuperar_Senha.solicitar_recuperacao_senha(),
+        "modal_recuperar_senha",
+        "modal_validar_codigo_recuperacao",
+        "Código enviado para seu e-mail!"
+    );
 
-            alert("Conta criada com sucesso!");
+    definir_formulario(
+        "form_validar_codigo_recuperacao",
+        () => Recuperar_Senha.validar_codigo(),
+        "modal_validar_codigo_recuperacao",
+        "modal_nova_senha",
+        "Código validado!"
+    );
 
-            form_cadastro.reset();
-
-            const modal_cadastro = document.getElementById("modal_cadastro");
-            if (modal_cadastro) {
-                modal_cadastro.style.display = "none";
-            }
-
-            } catch (erro) {
-                console.error("Erro no cadastro:", erro);
-                alert("Erro no cadastro");
-            }
-        });
-    }
-
-    //////
-
-    const form_recuperar_senha = document.getElementById("form_recuperar_senha");
-
-    if (form_recuperar_senha instanceof HTMLFormElement) {
-        form_recuperar_senha.addEventListener("submit", async (event) => {
-            event.preventDefault();
-            try {
-                await Login.recuperar_senha();
-
-                alert("Conta criada com sucesso!");
-
-                form_recuperar_senha.reset();
-
-                const modal_recuperar_senha = document.getElementById("modal_recuperar_senha");
-                if (modal_recuperar_senha) {
-                    modal_recuperar_senha.style.display = "none";
-                }
-
-
-
-            } catch (erro) {
-                console.error("Erro na Recuperação:", erro);
-                alert("Erro na Recuperação");
-            }
-        });
-    }
-
+    definir_formulario(
+        "form_nova_senha",
+        () => Recuperar_Senha.alterar_senha(),
+        "modal_nova_senha",
+        null,
+        "Senha alterada com sucesso!"
+    );
 
     ////////////////
 
-
-    const modal_cadastro = document.getElementById("modal_cadastro");
-    const abrir_cadastro = document.getElementById("abrir_cadastro");
-
-    if (modal_cadastro && abrir_cadastro) {
-        const fechar = modal_cadastro.querySelector(".fechar");
-
-        abrir_cadastro.addEventListener("click", (e) => {
-            e.preventDefault();
-            modal_cadastro.style.display = "flex";
-        });
-
-        fechar.addEventListener("click", () => {
-            modal_cadastro.style.display = "none";
-        });
-
-        window.addEventListener("click", (e) => {
-            if (e.target === modal_cadastro) {
-                modal_cadastro.style.display = "none";
-            }
-        });
-    }
-
-
-    //////
-
-
-    const modal_recuperar_senha = document.getElementById("modal_recuperar_senha");
-    const abrir_recuperar_senha = document.getElementById("abrir_recuperar_senha");
-
-    if (modal_recuperar_senha && abrir_recuperar_senha) {
-        const fechar = modal_recuperar_senha.querySelector(".fechar");
-
-        abrir_recuperar_senha.addEventListener("click", (e) => {
-            e.preventDefault();
-            modal_recuperar_senha.style.display = "flex";
-        });
-
-        fechar.addEventListener("click", () => {
-            modal_recuperar_senha.style.display = "none";
-        });
-
-        window.addEventListener("click", (e) => {
-            if (e.target === modal_recuperar_senha) {
-                modal_recuperar_senha.style.display = "none";
-            }
-        });
-    }
-
-
-    //////
-
-
-    const modal_validar_codigo_recuperacao = document.getElementById("modal_validar_codigo_recuperacao");
-
-    if (modal_validar_codigo_recuperacao) {
-        const fechar = modal_validar_codigo_recuperacao.querySelector(".fechar");
-
-        fechar.addEventListener("click", () => {
-            modal_validar_codigo_recuperacao.style.display = "none";
-        });
-
-    }
-
-
-    //////
-
-    const modal_nova_senha = document.getElementById("modal_nova_senha");
-
-    if (modal_nova_senha) {
-        const fechar = modal_nova_senha.querySelector(".fechar");
-
-        fechar.addEventListener("click", () => {
-            modal_nova_senha.style.display = "none";
-        });
-    }
+    definir_modal("modal_cadastro", "abrir_cadastro");
+    definir_modal("modal_recuperar_senha", "abrir_recuperar_senha");
+    definir_modal("modal_validar_codigo_recuperacao");
+    definir_modal("modal_nova_senha");
 
 });
 

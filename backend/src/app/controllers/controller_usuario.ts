@@ -174,7 +174,7 @@ class Controller_Usuario{
     }
 
     public static async create_usuario_var(nome: string | null, email: string, google_id: string | null, provedor_login: string, senha: string | null, admin: boolean): Promise<Usuario> {
-        return await Usuario.create({
+        const usuario = await Usuario.create({
             nome,
             email,
             google_id,
@@ -182,6 +182,12 @@ class Controller_Usuario{
             senha,
             admin,
         });
+
+        if (!usuario) {
+            throw new Error("Usuário não criado.");
+        }
+
+        return usuario;
     }
 
     public static async find_by_email_var(email: string): Promise<Usuario | null> {

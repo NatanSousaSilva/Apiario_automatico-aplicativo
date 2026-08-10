@@ -1,45 +1,34 @@
-
 class Dados_Dispositivo {
-
     static grafico_ruido = null;
     static grafico_humidade = null;
     static grafico_temperatura = null;
     static grafico_peso = null;
 
-
     static async carregar_dados() {
-
         try {
-
             const token = localStorage.getItem("token");
             const chave_dispositivo =
-                localStorage.getItem("dispositivo_atual");
-
+            localStorage.getItem("dispositivo_atual");
 
             if (!token || !chave_dispositivo) {
                 throw new Error("Dispositivo não selecionado");
             }
 
-
             const resposta = await fetch(
                 "http://localhost:3000/dados_leitura/list_by_chavedispositivo",
                 {
                     method: "POST",
-
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     },
-
                     body: JSON.stringify({
                         chave_dispositivo: chave_dispositivo
                     })
                 }
             );
 
-
             if (!resposta.ok) {
-
                 let erro;
 
                 try {
@@ -53,11 +42,8 @@ class Dados_Dispositivo {
                 );
             }
 
-
             const dados = await resposta.json();
-
             const leituras = dados.results;
-
 
             if (!Array.isArray(leituras)) {
                 throw new Error(
@@ -65,11 +51,8 @@ class Dados_Dispositivo {
                 );
             }
 
-
             this.processar_dados(leituras);
-
         } catch (erro) {
-
             console.error(
                 "Erro ao carregar dados:",
                 erro
@@ -77,16 +60,13 @@ class Dados_Dispositivo {
         }
     }
 
-
     static processar_dados(leituras) {
-
         const filtrar_sortear = (tipo_sensor) => {
 
             return leituras
                 .filter(item => item.sensor === tipo_sensor)
                 .sort((a, b) => a.vez_lida - b.vez_lida);
         };
-
 
         const temperatura =
             filtrar_sortear("temperatura");
@@ -100,7 +80,6 @@ class Dados_Dispositivo {
         const ruido =
             filtrar_sortear("ruido");
 
-
         this.atualizar_grafico(
             "grafico_temperatura",
             "Temperatura",
@@ -108,7 +87,6 @@ class Dados_Dispositivo {
             temperatura.map(d => Number(d.valor)),
             "grafico_temperatura"
         );
-
 
         this.atualizar_grafico(
             "grafico_humidade",
@@ -118,7 +96,6 @@ class Dados_Dispositivo {
             "grafico_humidade"
         );
 
-
         this.atualizar_grafico(
             "grafico_peso",
             "Peso",
@@ -126,7 +103,6 @@ class Dados_Dispositivo {
             peso.map(d => Number(d.valor)),
             "grafico_peso"
         );
-
 
         this.atualizar_grafico(
             "grafico_ruido",
@@ -137,7 +113,6 @@ class Dados_Dispositivo {
         );
     }
 
-
     static atualizar_grafico(
         canvas_id,
         titulo,
@@ -145,65 +120,45 @@ class Dados_Dispositivo {
         valores,
         propriedade
     ) {
-
         const grafico = this[propriedade];
 
-
-        // Se o gráfico já existe,
-        // apenas atualiza os dados.
         if (grafico) {
-
             grafico.data.labels = labels;
-
             grafico.data.datasets[0].data =
                 valores;
-
             grafico.update();
 
             return;
         }
 
-
         const canvas =
             document.getElementById(canvas_id);
 
-
         if (!canvas) {
-
             console.error(
                 `Canvas "${canvas_id}" não encontrado.`
             );
-
             return;
         }
-
 
         this[propriedade] = new Chart(
             canvas,
             {
                 type: "line",
-
                 data: {
-
                     labels: labels,
-
                     datasets: [
                         {
                             label: titulo,
-
                             data: valores,
-
                             borderWidth: 2,
-
                             tension: 0.3
                         }
                     ]
                 },
 
                 options: {
-
                     responsive: true,
-
                     maintainAspectRatio: false
                 }
             }
@@ -212,21 +167,16 @@ class Dados_Dispositivo {
 }
 
 
-window.addEventListener(
-    "DOMContentLoaded",
-    () => {
+window.addEventListener("DOMContentLoaded",() => {
+    async function rodarLoop() {
+        await Dados_Dispositivo.carregar_dados();
 
-        async function rodarLoop() {
-
-            await Dados_Dispositivo.carregar_dados();
-
-            setTimeout(
-                rodarLoop,
-                5000
-            );
-        }
-
-
-        rodarLoop();
+        setTimeout(
+            rodarLoop,
+            5000
+        );
     }
+
+    rodarLoop();
+}
 );

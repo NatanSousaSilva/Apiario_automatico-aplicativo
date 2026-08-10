@@ -11,6 +11,7 @@ body{
     justify-content:center;
     align-items:center;
     background:linear-gradient(135deg,#2E7D32,#66BB6A);
+    padding:20px;
 }
 
 .container{
@@ -67,6 +68,7 @@ input[type="password"]:focus,
 input[type="text"]:focus{
     border-color:#43A047;
     box-shadow:0 0 8px rgba(67,160,71,.3);
+    width: 100%;
 }
 
 input[type="submit"],
@@ -139,6 +141,8 @@ a:hover{
     border-radius:12px;
     width:90%;
     max-width:400px;
+    max-height:90vh;
+    overflow-y:auto;
     position:relative;
     box-shadow:0 10px 30px rgba(0,0,0,.3);
 }
@@ -159,10 +163,12 @@ a:hover{
 /**/
 
 @media(max-width:900px){
-
     .container{
-        flex-direction:column;
-        gap:20px;
+        display:flex;
+        gap:40px;
+        align-items:center;
+        flex-wrap:wrap;
+        justify-content:center;
     }
 
     .card{
@@ -173,5 +179,15 @@ a:hover{
     h1{
         font-size:2rem;
     }
+
+    body{
+        align-items:flex-start;
+    }
+
+    .modal_conteudo{
+        width:95%;
+        padding:20px;
+    }
+
 
 }
