@@ -1,4 +1,7 @@
-class Dashboard {
+import { definir_formulario, definir_modal } from "./functions";
+
+
+class Dashboard_Exibicao {
     static async carregar_usuarios() {
         try {
             const token = localStorage.getItem("token");
@@ -258,13 +261,97 @@ class Dashboard {
             this.carregar_dispositivos()
         ]);
     }
-}
+};
 
-document.addEventListener("DOMContentLoaded",() => {
-    Dashboard.carregar();
-});
+class Dashboard_Controle {
+    /*
+    static async cadastro_admin() {
+        const nome_input = document.getElementById("nome_cadastro_admin");
+        const email_input = document.getElementById("email_cadastro_admin");
+        const senha_input = document.getElementById("senha_cadastro_admin");
 
-document.getElementById("btn_sair")?.addEventListener("click",() => {
-    localStorage.removeItem("token");
-    window.location.href = "/login.html";
+        if (!email_input || !senha_input || !nome_input) {
+            throw new Error("Campos de email ou senha ou nome não encontrados.");
+        }
+
+        const nome = nome_input.value.trim();
+        const email = email_input.value.trim();
+        const senha = senha_input.value;
+
+        const resposta = await fetch(`${URL_base}/usuario/create`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nome: nome,
+                email: email,
+                senha: senha,
+            })
+        });
+
+        if (!resposta.ok) {
+            const erro = await resposta.json();
+
+            throw new Error(
+                erro.erro ??
+                `Erro HTTP: ${resposta.status}`
+            );
+        }
+
+    } */
+
+    static async cadastro_dispositivo() {
+        const chave_input = document.getElementById("chave_cadastro_dispositivo");
+        const senha_input = document.getElementById("senha_cadastro_dispositivo");
+
+        if (!chave_input || !senha_input) {
+            throw new Error("Campos de email ou senha ou nome não encontrados.");
+        }
+
+        const chave = chave_input.value.trim();
+        const senha = senha_input.value;
+
+        const resposta = await fetch(`${URL_base}/dispositivo/create`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                chave: chave,
+                senha: senha,
+            })
+        });
+
+        if (!resposta.ok) {
+            const erro = await resposta.json();
+
+            throw new Error(
+                erro.erro ??
+                `Erro HTTP: ${resposta.status}`
+            );
+        }
+    }
+};
+
+window.addEventListener("DOMContentLoaded",() => {
+    definir_formulario(
+        "form_cadastrar_dispositivo",
+        () => Dashboard_Controle.associar_dispositivo(),
+        "modal_cadastrar_dispositivo",
+        null,
+        "Dispositivo cadastrado com sucesso!"
+    );
+    definir_modal("modal_cadastrar_dispositivo", "cadastrar_dispositivo");
+
+    Dashboard_Exibicao.carregar();    
+
+    const btn_sair = document.getElementById("btn_sair");
+    btn_sair.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = "/";
+
+        localStorage.removeItem("token");
+    });
+
 });

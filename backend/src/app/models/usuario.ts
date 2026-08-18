@@ -7,8 +7,8 @@ class Usuario extends Model<InferAttributes<Usuario>, InferCreationAttributes<Us
     declare senha: string | null;
     declare google_id: string | null;
     declare nome: string | null;
-    declare provedor_login: CreationOptional<string>;
-    declare admin: CreationOptional<boolean>;
+    declare provedor_login: string | null;
+    declare admin: boolean;
 }
 
 Usuario.init({

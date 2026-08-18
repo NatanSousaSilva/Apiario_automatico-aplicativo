@@ -1,44 +1,24 @@
 import Server from "./server/server";
 import { sequelize } from "./config/config_db";
-import { Usuario } from "./app/models";
 
 const PORT = 3000;
 
-Server.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
-
-/*
-async function teste() {
+async function iniciarServidor() {
     try {
         await sequelize.authenticate();
-        console.log("Banco conectado!");
+        console.log("Banco de dados conectado!");
 
         await sequelize.sync();
-        console.log("Tabelas sincronizadas!");
+        console.log("Tabelas verificadas/criadas!");
 
-        const [usuario, created] = await Usuario.findOrCreate({
-            where: {
-                email: "teste@email.com"
-            },
-            defaults: {
-                nome: "Natan",
-                email: "teste@email.com",
-                google_id: null,
-                provedor_login: "local",
-                senha: "123456",
-                admin: false,
-            }
+        Server.listen(PORT, () => {
+            console.log(`Servidor rodando em http://localhost:${PORT}`);
         });
 
-        console.log(created ? "Usuário criado!" : "Usuário já existia.");
-        console.log(usuario.toJSON());
-
     } catch (erro) {
-        console.error("Erro:");
+        console.error("Erro ao iniciar a aplicação:");
         console.error(erro);
     }
 }
 
-teste();
-*/
+iniciarServidor();

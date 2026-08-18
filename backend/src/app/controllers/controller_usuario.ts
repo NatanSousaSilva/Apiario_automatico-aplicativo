@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { Usuario } from "../models/index";
 
+import bcrypt from "bcrypt";
+
 interface IUsuario {
     id: number;
     email: string;
     senha: string;
-    google_id: string;
+    google_id: string | null;
     nome: string;
-    provedor_login: string;
-    admin: boolean;
+    provedor_login: string | null;
 }
 
 class Controller_Usuario{
@@ -29,13 +30,15 @@ class Controller_Usuario{
                 return;
             }
 
+            const senha_incpritografada = await bcrypt.hash(req.body.senha, 10);
+
             const usuario = await Usuario.create({
                 email: req.body.email,
-                senha: req.body.senha,
-                google_id: req.body.google_id,
+                senha: senha_incpritografada,
+                google_id: req.body.google_id ?? null,
                 nome: req.body.nome,
-                provedor_login: req.body.provedor_login,
-                admin: req.body.admin,
+                provedor_login: req.body.provedor_login ?? null,
+                admin: false
             });
 
             if (!usuario) {
@@ -173,19 +176,21 @@ class Controller_Usuario{
         }
     }
 
-    public static async create_usuario_var(nome: string | null, email: string, google_id: string | null, provedor_login: string, senha: string | null, admin: boolean): Promise<Usuario> {
+    public static async create_usuario_var(nome: string | null, email: string, google_id: string | null, provedor_login: string, senha_: string | null, admin: boolean): Promise<Usuario> {
+        let senha_incpritografada: string | null = null;
+
+        if (senha_ !== null) {
+            senha_incpritografada = await bcrypt.hash(senha_, 10);
+        }
+
         const usuario = await Usuario.create({
             nome,
             email,
             google_id,
             provedor_login,
-            senha,
+            senha: senha_incpritografada,
             admin,
         });
-
-        if (!usuario) {
-            throw new Error("Usuário não criado.");
-        }
 
         return usuario;
     }

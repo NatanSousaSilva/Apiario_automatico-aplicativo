@@ -1,109 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="../styles/formulario.css">
+</head>
+<body>
+    <header>
+        <h1>Dashboard Administrativo</h1>
+
+        <div class="usuario_logado">
+            <span id="nome_usuario">Carregando...</span>
+            <button id="btn_sair">Sair</button>
+        </div>
+
+        <script type="module" src="../scripts/dashboard.js"></script>
+
+    </header>
+
+    <main>
+        <section class="cards_resumo">
+
+            <div class="card">
+                <h3>Usuários</h3>
+                <p id="quantidade_usuarios">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Dispositivos</h3>
+                <p id="quantidade_dispositivos">0</p>
+            </div>
+
+        </section>
+
+
+        <section class="painel_container">
+
+            <!-- Usuarios -->
+            <section class="painel">
+
+                <div class="painel_header">
+                    <h2>Controle de Usuários</h2>
+                </div>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Perfil</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabela_usuarios">
+
+                        <tr>
+                            <td colspan="4">
+                                Carregando usuários...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </section>
+
+
+            <!-- Dispositivos -->
+            <section class="painel">
+
+                <div class="painel_header">
+
+                    <h2>Controle de Dispositivos</h2>
+
+                    <button class="btn" id="cadastrar_novo_dispositivo">
+                        + Novo Dispositivo
+                    </button>
+
+                </div>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Chave</th>
+                            <th>Dono</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabela_dispositivos">
+
+                        <tr>
+                            <td colspan="3">
+                                Carregando dispositivos...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </section>
+
+        </section>
+
+
+        <!-- Modals -->
+        <div id="modal_cadastro" class="modal">
+            <div class="modal_cadastrar_dispositivo">
+                <span class="fechar">&times;</span>
+                <h2>Cadastrar Dispositivo</h2>
+
+                <form id="form_cadastrar_dispositivo">
+                    <label for="chave_cadastro_dispositivo">Chave:</label>
+                    <input type="text" id="chave_cadastro_dispositivo" required>
+
+                    <label for="senha_cadastro_dispositivo">Senha:</label>
+                    <input type="password" id="senha_cadastro_dispositivo" required>
+
+                    <input type="submit" value="Cadastrar">
+                </form>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>
 <link rel="stylesheet" href="../styles/dashboard.css">
 
-<header>
-    <h1>Dashboard Administrativo</h1>
-
-    <div class="usuario_logado">
-        <span id="nome_usuario">Carregando...</span>
-        <button id="btn_sair">Sair</button>
-    </div>
-
-    <script type="module" src="../scripts/dashboard.js"></script>
-
-</header>
-
-<main>
-    <section class="cards_resumo">
-
-        <div class="card">
-            <h3>Usuários</h3>
-            <p id="quantidade_usuarios">0</p>
-        </div>
-
-        <div class="card">
-            <h3>Dispositivos</h3>
-            <p id="quantidade_dispositivos">0</p>
-        </div>
-
-    </section>
-
-
-    <section class="painel_container">
-
-        <!-- Usuarios -->
-        <section class="painel">
-
-            <div class="painel_header">
-                <h2>Controle de Usuários</h2>
-
-                <button class="btn">
-                    + Novo Usuário
-                </button>
-            </div>
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>E-mail</th>
-                        <th>Perfil</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-
-                <tbody id="tabela_usuarios">
-
-                    <tr>
-                        <td colspan="4">
-                            Carregando usuários...
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </section>
-
-
-        <!-- Dispositivos -->
-        <section class="painel">
-
-            <div class="painel_header">
-
-                <h2>Controle de Dispositivos</h2>
-
-                <button class="btn">
-                    + Novo Dispositivo
-                </button>
-
-            </div>
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Chave</th>
-                        <th>Dono</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-
-                <tbody id="tabela_dispositivos">
-
-                    <tr>
-                        <td colspan="3">
-                            Carregando dispositivos...
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </section>
-
-    </section>
-
-</main>

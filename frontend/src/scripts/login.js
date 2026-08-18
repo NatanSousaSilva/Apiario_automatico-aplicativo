@@ -4,7 +4,16 @@ import { URL_base } from "./url.js";
 class Login {
     constructor() {}
 
-    static
+    static async verificar_admin(token) {
+        const resposta = await fetch(`${URL_base}/credential/verificar_admin`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (resposta.ok) return true;
+        else return false;
+    }
 
     static async login_google(response) {
         const token = response.credential;
@@ -32,6 +41,8 @@ class Login {
         if (!dados.token) { throw new Error("Token não recebido"); }
 
         localStorage.setItem("token", dados.token);
+
+        if (Login.verificar_admin(dados.token)) return; 
 
         window.location.href = "/home";
     }
@@ -72,6 +83,13 @@ class Login {
         if (!dados.token) { throw new Error("Token não recebido."); }
 
         localStorage.setItem("token", dados.token);
+
+        const admin = await Login.verificar_admin(dados.token);
+
+        if (admin) { 
+            window.location.href = "/dashboard";
+            return;
+        }
 
         window.location.href = "/home";
     }

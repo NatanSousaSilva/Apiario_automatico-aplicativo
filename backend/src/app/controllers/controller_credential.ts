@@ -103,7 +103,7 @@ class Controller_Credential {
 
             if (!senha_valida) {
                 res.status(401).json({
-                    erro: "Email ou senha inválidos"
+                    erro: "Email ou Senha inválidos"
                 });
                 return;
             }
@@ -152,14 +152,12 @@ class Controller_Credential {
                 return;
             }
 
-            const senha_encriptografada = await bcrypt.hash(senha, 10);
-
             const usuario = await Controller_Usuario.create_usuario_var(
                 nome,
                 email,
                 null,
                 "local",
-                senha_encriptografada,
+                senha,
                 false
             );
 
